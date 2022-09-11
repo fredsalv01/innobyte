@@ -89,7 +89,7 @@
         "documentation": {}
     },
     {
-        "label": "TokenObtainPairView",
+        "label": "TokenRefreshView",
         "importPath": "rest_framework_simplejwt.views",
         "description": "rest_framework_simplejwt.views",
         "isExtraImport": true,
@@ -97,7 +97,7 @@
         "documentation": {}
     },
     {
-        "label": "TokenRefreshView",
+        "label": "TokenObtainPairView",
         "importPath": "rest_framework_simplejwt.views",
         "description": "rest_framework_simplejwt.views",
         "isExtraImport": true,
@@ -126,6 +126,14 @@
         "description": "rest_framework.decorators",
         "isExtraImport": true,
         "detail": "rest_framework.decorators",
+        "documentation": {}
+    },
+    {
+        "label": "TokenObtainPairSerializer",
+        "importPath": "rest_framework_simplejwt.serializers",
+        "description": "rest_framework_simplejwt.serializers",
+        "isExtraImport": true,
+        "detail": "rest_framework_simplejwt.serializers",
         "documentation": {}
     },
     {
@@ -219,7 +227,7 @@
         "kind": 5,
         "importPath": "backend.settings",
         "description": "backend.settings",
-        "peekOfCode": "INSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',\n    'django.contrib.staticfiles',\n    'base.apps.BaseConfig',\n    'rest_framework',\n]",
+        "peekOfCode": "INSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',\n    'django.contrib.staticfiles',\n    'base.apps.BaseConfig',\n    'rest_framework',\n    'rest_framework_simplejwt.token_blacklist',",
         "detail": "backend.settings",
         "documentation": {}
     },
@@ -372,8 +380,26 @@
         "kind": 5,
         "importPath": "base.api.urls",
         "description": "base.api.urls",
-        "peekOfCode": "urlpatterns = [\n    path('', views.getRoutes),\n    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),\n    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),\n]",
+        "peekOfCode": "urlpatterns = [\n    path('', views.getRoutes),\n    path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),\n    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),\n]",
         "detail": "base.api.urls",
+        "documentation": {}
+    },
+    {
+        "label": "MyTokenObtainPairSerializer",
+        "kind": 6,
+        "importPath": "base.api.views",
+        "description": "base.api.views",
+        "peekOfCode": "class MyTokenObtainPairSerializer(TokenObtainPairSerializer):\n    @classmethod\n    def get_token(cls, user):\n        token = super().get_token(user)\n        # Add custom claims\n        token['username'] = user.username\n        # ...\n        return token\nclass MyTokenObtainPairView(TokenObtainPairView):\n    serializer_class = MyTokenObtainPairSerializer",
+        "detail": "base.api.views",
+        "documentation": {}
+    },
+    {
+        "label": "MyTokenObtainPairView",
+        "kind": 6,
+        "importPath": "base.api.views",
+        "description": "base.api.views",
+        "peekOfCode": "class MyTokenObtainPairView(TokenObtainPairView):\n    serializer_class = MyTokenObtainPairSerializer\n@api_view(['GET'])\ndef getRoutes(request):\n  routes = [\n    '/api/token',\n    '/api/token/refresh'\n  ]\n  return Response(routes)",
+        "detail": "base.api.views",
         "documentation": {}
     },
     {
